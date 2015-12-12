@@ -42,6 +42,8 @@ function Story() {
 	// Bind nodes together
 	this.join('start', 'screen1', 'screen2');
 	this.join('screen1', 'start', 'screen3');
+	this.join('screen2', 'start', 'screen3');
+	this.join('screen3', 'screen1', 'screen2');
 }
 
 /**
@@ -62,8 +64,8 @@ Story.prototype.join = function (from, left, right) {
 		throw "From is missing!";
 	}
 
-	this.nodes[from].left  = left;
-	this.nodes[from].right = right;
+	this.nodes[from].left  = this.getNode(left);
+	this.nodes[from].right = this.getNode(right);
 };
 
 /** @return Node */
