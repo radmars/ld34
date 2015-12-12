@@ -1,4 +1,15 @@
 "use strict";
+
+var BGColor = me.Renderable.extend({
+	init: function() {
+		this._super(me.Renderable, 'init', [0, 0, window.app.screenWidth, window.app.screenHeight]);
+	},
+	draw: function(context) {
+		context.setColor('#000');
+		context.fillRect(0, 0, window.app.screenWidth, window.app.screenHeight);
+	},
+});
+
 /** The game play state... */
 var PlayScreen = me.ScreenObject.extend({
 	init: function() {
@@ -26,6 +37,8 @@ var PlayScreen = me.ScreenObject.extend({
 
 		me.game.reset();
 
+		me.game.world.addChild(new BGColor());
+
 		this.addSprites();
 
 		me.input.bindKey(me.input.KEY.A, "A");
@@ -37,8 +50,12 @@ var PlayScreen = me.ScreenObject.extend({
 	},
 
 	addSprites: function() {
-		this.currentNodeSprites = this.currentNodes.map(function(e){
-			return new StoryRenderable(e);
+		var scale = 1/this.currentNodes.length;
+		this.currentNodeSprites = this.currentNodes.map(function(e, i){
+			var s = new StoryRenderable(e);
+			s.scale(scale, scale);
+			s.pos.x = i * s.image.width * scale;
+			return s;
 		});
 		this.currentNodeSprites.forEach(function(e){
 			me.game.world.addChild(e);
