@@ -49,13 +49,13 @@ function Story() {
 			bg: 'screen2',
 			left: {
 				node: 'screen1',
-				str: "one",
-				pos: new me.Vector2d(0.1, 0.75),
+				str: "activate",
+				pos: new me.Vector2d(0.35, 0.65),
 			},
 			right: {
 				node: 'screen3',
-				str: "two",
-				pos: new me.Vector2d(0.8, 0.75),
+				str: "unplug",
+				pos: new me.Vector2d(0.66, 0.60),
 			},
 		},
 		screen3: {
