@@ -33,6 +33,9 @@ function Story() {
 		screen3: {
 			bg: 'screen3',
 		},
+		radmars: {
+			bg: 'intro_mars.png',
+		}
 	};
 
 	Object.keys(data).forEach(function(e) {
@@ -43,7 +46,7 @@ function Story() {
 	this.join('start', 'screen1', 'screen2');
 	this.join('screen1', 'start', 'screen3');
 	this.join('screen2', 'start', 'screen3');
-	this.join('screen3', 'screen1', 'screen2');
+	this.join('screen3', 'screen1', 'radmars');
 }
 
 /**

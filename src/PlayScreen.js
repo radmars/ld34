@@ -54,7 +54,8 @@ var PlayScreen = me.ScreenObject.extend({
 		this.currentNodeSprites = this.currentNodes.map(function(e, i){
 			var s = new StoryRenderable(e);
 			s.scale(scale, scale);
-			s.pos.x = i * s.image.width * scale;
+			s.pos.y = window.app.screenHeight/2 - s.image.height * .5 * scale;
+			s.pos.x = i * s.image.width * scale + 10 * i;
 			return s;
 		});
 		this.currentNodeSprites.forEach(function(e){
