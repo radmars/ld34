@@ -1,12 +1,12 @@
-var screenHeight = 600;
-var screenWidth = 600;
 
 function LD34() {
+	this.screenHeight = 600;
+	this.screenWidth = 600;
 	this.data = {};
 };
 
 LD34.prototype.onload = function() {
-	if ( !me.video.init( screenWidth, screenHeight, { wrapper: 'canvas', scale : 1.0 })) {
+	if ( !me.video.init( this.screenWidth, this.screenHeight, { wrapper: 'canvas', scale : 1.0 })) {
 		alert ("Yer browser be not workin");
 		return;
 	}
@@ -75,7 +75,7 @@ LD34.prototype.rightClickProxy = function(e){
 */
 LD34.prototype.loaded = function() {
 	me.state.set( me.state.INTRO, new RadmarsScreen() );
-	//me.state.set( me.state.MENU, new TitleScreen() );
+	me.state.set( me.state.MENU, new TitleScreen() );
 	me.state.set( me.state.PLAY, new PlayScreen() );
 	//me.state.set( me.state.GAMEOVER, new GameOverScreen() );
 
@@ -85,7 +85,6 @@ LD34.prototype.loaded = function() {
 /** The game play state... */
 var PlayScreen = me.ScreenObject.extend({
 	endGame: function(){
-		LD33.data.beatGame = true;
 		me.state.change( me.state.GAMEOVER );
 	},
 
@@ -113,7 +112,7 @@ var PlayScreen = me.ScreenObject.extend({
 			me.audio.playTrack("ld33-3", 0.5);
 		}
 
-		LD33.data.currentLevel=level;
+		window.app.data.currentLevel=level;
 	},
 
 	getLevel: function() {
@@ -136,10 +135,9 @@ var PlayScreen = me.ScreenObject.extend({
 	onResetEvent: function(newLevel) {
 		console.log("onResetEvent " + newLevel );
 		var self = this;
-		LD33.data.beatGame = false;
 		me.game.reset();
 
-		var lev = LD33.data.currentLevel;
+		var lev = window.app.data.currentLevel;
 		if(lev == ""){
 			lev = "level1";
 		}

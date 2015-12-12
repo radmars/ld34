@@ -22,7 +22,7 @@ var RadmarsScreen = me.ScreenObject.extend({
 
 var RadmarsRenderable = me.Renderable.extend({
     init: function() {
-        this._super( me.Renderable, "init", [0, 0, screenHeight, screenWidth] );
+        this._super( me.Renderable, "init", [0, 0, window.app.screenWidth, window.app.screenWidth] );
         this.counter = 0;
 
         this.floating = true;

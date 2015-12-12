@@ -35,7 +35,12 @@ var GameResources = (function() {
 		_Image( "intro_radmars2" ),
 		_Audio( "radmarslogo" ),
 
+		// title screen
+		_Image("splash"),
+		_Image("introcta"),
+
 		// ui
+		_Image("8x8_font"),
 		_Image("16x16_font"),
 		_Image("32x32_font"),
 	];
