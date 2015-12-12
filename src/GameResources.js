@@ -39,6 +39,12 @@ var GameResources = (function() {
 		_Image("splash"),
 		_Image("introcta"),
 
+		// game screens
+		_Image("start"),
+		_Image("screen1"),
+		_Image("screen2"),
+		_Image("screen3"),
+
 		// ui
 		_Image("8x8_font"),
 		_Image("16x16_font"),

@@ -41,7 +41,7 @@ var TitleScreen = me.ScreenObject.extend({
 		//me.audio.playTrack( "ld34-title", 0.7 );
 		//me.audio.play("micromancer");
 
-		this.subscription = me.event.subscribe( me.event.KEYDOWN, this.keyHandler.bind());
+		this.subscription = me.event.subscribe( me.event.KEYDOWN, this.keyHandler.bind(this));
 	},
 
 	keyHandler: function (action, keyCode, edge) {
