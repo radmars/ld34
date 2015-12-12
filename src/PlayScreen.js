@@ -19,6 +19,8 @@ var PlayScreen = me.ScreenObject.extend({
 		this.startNode = 'start';
 		// number of MS to wait for two button press
 		this.twoButtonTimeout = 100;
+		this.font = this.font = new me.BitmapFont("16x16_font", 16);
+		this.font.set("center");
 	},
 
 	endGame: function(){
@@ -51,8 +53,9 @@ var PlayScreen = me.ScreenObject.extend({
 
 	addSprites: function() {
 		var scale = 1/this.currentNodes.length;
+		var font = this.font;
 		this.currentNodeSprites = this.currentNodes.map(function(e, i){
-			var s = new StoryRenderable(e);
+			var s = new StoryRenderable(e, font);
 			s.scale(scale, scale);
 			s.pos.y = window.app.screenHeight/2 - s.image.height * .5 * scale;
 			s.pos.x = i * s.image.width * scale + 10 * i;
@@ -73,10 +76,10 @@ var PlayScreen = me.ScreenObject.extend({
 		this.clearSprites();
 		var newNodes = [];
 		if(this.actionA) {
-			newNodes.push(this.currentNodes[this.focusedNodeIndex].left);
+			newNodes.push(this.currentNodes[this.focusedNodeIndex].left.node);
 		}
 		if(this.actionB) {
-			newNodes.push(this.currentNodes[this.focusedNodeIndex].right);
+			newNodes.push(this.currentNodes[this.focusedNodeIndex].right.node);
 		}
 		this.currentNodes.shift();
 		// insert new nodes at the start
@@ -85,7 +88,6 @@ var PlayScreen = me.ScreenObject.extend({
 		this.addSprites();
 		me.game.world.sort(true);
 		this.clearButtons();
-		console.log("Hi?");
 	},
 
 	/** Clear button timers */

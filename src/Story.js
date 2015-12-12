@@ -1,4 +1,4 @@
-
+"use strict";
 /**
  * Nodes in a story have a left and right choice, a background... maybe some
  * other things?
@@ -6,10 +6,8 @@
  */
 function Node(settings) {
 	this.bg = settings.bg;
-	/** @type Node */
-	this.right = null;
-	/** @type Node */
-	this.left = null;
+	this.right = settings.right;
+	this.left = settings.left;
 }
 
 /**
@@ -23,53 +21,76 @@ function Story() {
 	var data = {
 		start: {
 			bg: 'start',
+			left: {
+				node: 'screen1',
+				str: "one",
+				pos: new me.Vector2d(0.1, 0.75),
+			},
+			right: {
+				node: 'screen2',
+				str: "two",
+				pos: new me.Vector2d(0.8, 0.75),
+			},
 		},
 		screen1: {
 			bg: 'screen1',
+			left: {
+				node: 'screen3',
+				str: "run",
+				pos: new me.Vector2d(0.2, 0.70),
+			},
+			right: {
+				node: 'screen2',
+				str: "open",
+				pos: new me.Vector2d(0.7, 0.55),
+			},
 		},
 		screen2: {
 			bg: 'screen2',
+			left: {
+				node: 'screen1',
+				str: "one",
+				pos: new me.Vector2d(0.1, 0.75),
+			},
+			right: {
+				node: 'screen3',
+				str: "two",
+				pos: new me.Vector2d(0.8, 0.75),
+			},
 		},
 		screen3: {
 			bg: 'screen3',
+			left: {
+				node: 'start',
+				str: "one",
+				pos: new me.Vector2d(0.1, 0.75),
+			},
+			right: {
+				node: 'screen2',
+				str: "two",
+				pos: new me.Vector2d(0.8, 0.75),
+			},
 		},
 		radmars: {
 			bg: 'intro_mars.png',
 		}
 	};
 
+	// First past creates nodes.
 	Object.keys(data).forEach(function(e) {
 		this.nodes[e] = new Node(data[e]);
 	}.bind(this));
 
-	// Bind nodes together
-	this.join('start', 'screen1', 'screen2');
-	this.join('screen1', 'start', 'screen3');
-	this.join('screen2', 'start', 'screen3');
-	this.join('screen3', 'screen1', 'radmars');
+	// Second pass replace node name with reference.
+	Object.keys(data).forEach(function(e) {
+		var n = this.nodes[e];
+		['left','right'].forEach(function(side){
+			if(n[side]) {
+				n[side].node = this.nodes[n[side].node];
+			}
+		}.bind(this));
+	}.bind(this));
 }
-
-/**
- * @param {Node} from.
- * @param {Node} left.
- * @param {Node} right.
- */
-Story.prototype.join = function (from, left, right) {
-	if(left == null  || !this.nodes[left]) {
-		throw "Left is null or missing!";
-	}
-
-	if(right == null || !this.nodes[right]) {
-		throw "Right is null or missing!";
-	}
-
-	if(from == null  || !this.nodes[from]) {
-		throw "From is missing!";
-	}
-
-	this.nodes[from].left  = this.getNode(left);
-	this.nodes[from].right = this.getNode(right);
-};
 
 /** @return Node */
 Story.prototype.getNode = function(name) {
