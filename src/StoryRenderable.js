@@ -5,6 +5,7 @@ var StoryRenderable = me.Renderable.extend({
 		this.node = node;
 		this.font = font;
 		this.imageCache = {};
+		this._localScale = .8;
 	},
 
 	getImage: function() {
@@ -23,24 +24,35 @@ var StoryRenderable = me.Renderable.extend({
 
 	setPosition: function(index, current) {
 		this._current = index == current;
-		this._localScale;
+		var depth = Math.abs(current - index);
+		var newScale;
 
 		if(this._current) {
-			this._localScale = .8;
-			this.z = 5;
+			newScale = .8;
 		}
 		else {
-			this._localScale = .4;
-			this.z = 4;
+			newScale = .4;
 		}
-		var image = this.getImage();
-		image.scale(this._localScale, this._localScale);
-		this.pos.y = window.app.screenHeight/2 - (
-			(current - index) * (40 + image.height * this._localScale)
-			 + image.height / 2 * this._localScale
-		 );
+		this.z = 5 - depth;
 
-		this.pos.x = window.app.screenWidth/2 - image.width / 2 * this._localScale;
+		if(this.scaleTween) { this.scaleTween.stop() }
+		this.scaleTween = new me.Tween(this)
+			.to({_localScale: newScale}, 1000)
+			.onUpdate(() => { this.getImage().scale(this._localScale, this._localScale); })
+			.start();
+
+		var image = this.getImage();
+
+		if(this.positionTween) { this.positionTween.stop() }
+		this.positionTween = new me.Tween(this.pos)
+			.to({
+				y: window.app.screenHeight/2 - (
+					(current - index) * (40 + image.height * newScale)
+					+ image.height / 2 * newScale
+				),
+				x: window.app.screenWidth/2 - image.width / 2 * newScale,
+			})
+			.start();
 	},
 
 	draw: function(ctx) {
