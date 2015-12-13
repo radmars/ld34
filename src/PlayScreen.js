@@ -1,5 +1,31 @@
 "use strict";
 
+function Timeline(n, font){
+	this.node = n;
+	this.sprite = new StoryRenderable(n, font);
+};
+
+Timeline.prototype.right = function() {
+	return this.node.right.node;
+}
+
+Timeline.prototype.left = function() {
+	return this.node.left.node;
+}
+
+Timeline.prototype.progress = function(next) {
+	this.node = next;
+	this.sprite.node = next;
+}
+
+Timeline.prototype.activate = function() {
+	me.game.world.addChild(this.sprite);
+}
+
+Timeline.prototype.destroy = function() {
+	me.game.world.removeChild(this.sprite);
+}
+
 var BGColor = me.Renderable.extend({
 	init: function() {
 		this._super(me.Renderable, 'init', [0, 0, window.app.screenWidth, window.app.screenHeight]);
@@ -15,7 +41,6 @@ var PlayScreen = me.ScreenObject.extend({
 	init: function() {
 		this.story = new Story();
 		this.timelines = [];
-		this.timelinesprites = [];
 		this.startNode = 'start';
 		// number of MS to wait for two button press
 		this.twoButtonTimeout = 100;
@@ -49,21 +74,20 @@ var PlayScreen = me.ScreenObject.extend({
 	},
 
 	relayout: function() {
-		var focusedScale = .8;
-		var outOfFocusScale = .6;
-		var font = this.font;
-		this.timelinesprites.forEach((s, i) => {
-			s.setPosition(i, this.currentTimeline);
-			return s;
+		this.timelines.forEach((t, i) => {
+			t.sprite.setPosition(i, this.currentTimeline);
 		});
 	},
 
+	/**
+	 * @param {Node} node
+	 * @param {me.Vector2d} [position]
+	 */
 	addTimeline: function(node, position) {
 		position = position || 0;
-		this.timelines.splice(position, 0, node);
-		var sprite = new StoryRenderable(node, this.font);
-		this.timelinesprites.splice(position, 0,sprite);
-		me.game.world.addChild(sprite)
+		var timeline = new Timeline(node, this.font)
+		this.timelines.splice(position, 0, timeline);
+		timeline.activate();
 	},
 
 	makeChoice: function() {
@@ -79,10 +103,10 @@ var PlayScreen = me.ScreenObject.extend({
 
 		var newNodes = [];
 		if(this.actionA) {
-			newNodes.push(this.timelines[this.currentTimeline].left.node);
+			newNodes.push(this.timelines[this.currentTimeline].left());
 		}
 		if(this.actionB) {
-			newNodes.push(this.timelines[this.currentTimeline].right.node);
+			newNodes.push(this.timelines[this.currentTimeline].right());
 		}
 
 		// TODO: Should it pick a random node for each timeline in a split?
@@ -99,11 +123,7 @@ var PlayScreen = me.ScreenObject.extend({
 	},
 
 	advanceTimeline: function(index, selection) {
-		this.timelines[index] = selection;
-		var sprite = new StoryRenderable(selection, this.font);
-		var removed = this.timelinesprites.splice(index, 1, sprite);
-		me.game.world.removeChild(removed[0]);
-		me.game.world.addChild(sprite);
+		this.timelines[index].progress(selection);
 	},
 
 	/** Clear button timers */
@@ -122,6 +142,7 @@ var PlayScreen = me.ScreenObject.extend({
 			this.actionA = this.actionA || a;
 			this.actionB = this.actionB || b;
 			// start a timer if there isn't one already
+			console.log("Timer/??");
 			this.actionTimer = this.actionTimer || me.timer.setTimeout(this.makeChoice.bind(this), this.twoButtonTimeout);
 		}
 	},
