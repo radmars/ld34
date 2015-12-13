@@ -16,19 +16,19 @@ var Notification = me.Renderable.extend({
 		// invalidate metrics cache
 		this.metrics = null;
 		this.font.alpha = 1.0;
-		var fader = new me.Tween(this.font);
-		fader.to({
-			alpha : 0,
-		}, 1500).onComplete((function () {
-			this.text = null;
-		}).bind(this)).start();
+		if(this.fader) {
+			this.fader.stop();
+		}
+		this.fader = new me.Tween(this.font);
+		this.fader.to({ alpha : 0, }, 1500);
+		this.fader.onComplete(() => { this.text = null; }).start();
 	},
 
 	draw: function(ctx) {
 		if(this.text) {
 			this.metrics = this.metrics || this.font.measureText(ctx, this.text);
 			var x = window.app.screenWidth/2 - this.metrics.width / 2;
-			var y = 30;
+			var y = 100;
 			this.font.draw(ctx, this.text.toUpperCase(), x, y);
 		}
 	},

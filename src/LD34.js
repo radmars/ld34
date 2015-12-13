@@ -1,7 +1,7 @@
 
 function LD34() {
-	this.screenHeight = 600;
-	this.screenWidth = 600;
+	this.screenHeight = 800;
+	this.screenWidth = 800;
 	this.data = {};
 };
 
