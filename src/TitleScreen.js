@@ -25,15 +25,18 @@ var HitEnter = me.Renderable.extend({
 
 var TitleScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
-		this.bg = new me.ImageLayer( 0, 0, {
-			image:  "splash",
-			width:  window.app.screenWidth,
-			height: window.app.screenHeight,
-			name:   "title",
+		this.bg = new me.Sprite( 0, 0, {
+			image: "splash",
 		});
+		var cx = window.app.screenWidth / 2;
+		var cy = window.app.screenHeight / 2;
+
+		this.bg.pos.x = cx - this.bg.width / 2;
+		this.bg.pos.y = cy - this.bg.height / 2;
 
 		this.hitenter = new HitEnter(window.app.screenWidth/2, window.app.screenHeight/2);
 
+		me.game.world.addChild(new BGColor() );
 		me.game.world.addChild(this.bg );
 		me.game.world.addChild(this.hitenter);
 
