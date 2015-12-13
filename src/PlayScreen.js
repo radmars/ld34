@@ -26,16 +26,6 @@ Timeline.prototype.destroy = function() {
 	me.game.world.removeChild(this.sprite);
 }
 
-var BGColor = me.Renderable.extend({
-	init: function() {
-		this._super(me.Renderable, 'init', [0, 0, window.app.screenWidth, window.app.screenHeight]);
-	},
-	draw: function(context) {
-		context.setColor('#000');
-		context.fillRect(0, 0, window.app.screenWidth, window.app.screenHeight);
-	},
-});
-
 /** The game play state... */
 var PlayScreen = me.ScreenObject.extend({
 	init: function() {
@@ -141,13 +131,11 @@ var PlayScreen = me.ScreenObject.extend({
 		if(a || b) {
 			this.actionA = this.actionA || a;
 			this.actionB = this.actionB || b;
-			// start a timer if there isn't one already
-			console.log("Timer/??");
 			this.actionTimer = this.actionTimer || me.timer.setTimeout(this.makeChoice.bind(this), this.twoButtonTimeout);
 		}
 	},
 
 	onDestroyEvent: function() {
-		console.log("Destroy?");
+		me.audio.stopTrack();
 	},
 });
