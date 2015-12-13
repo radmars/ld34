@@ -14,13 +14,14 @@ var BGColor = me.Renderable.extend({
 var PlayScreen = me.ScreenObject.extend({
 	init: function() {
 		this.story = new Story();
-		this.currentNodes = [];
-		this.currentNodeSprites = [];
+		this.timelines = [];
+		this.timelinesprites = [];
 		this.startNode = 'start';
 		// number of MS to wait for two button press
 		this.twoButtonTimeout = 100;
-		this.font = this.font = new me.BitmapFont("16x16_font", 16);
+		this.font = new me.BitmapFont("16x16_font", 16);
 		this.font.set("center");
+		this.notification = new Notification();
 	},
 
 	endGame: function(){
@@ -33,13 +34,14 @@ var PlayScreen = me.ScreenObject.extend({
 		me.game.reset();
 
 		// TODO: Hacks
-		this.currentNodes = [this.story.getNode(this.startNode)];
+		this.timelines = [this.story.getNode(this.startNode)];
 		this.focusedNodeIndex = 0;
 		this.clearButtons();
 
 		me.game.reset();
 
 		me.game.world.addChild(new BGColor());
+		me.game.world.addChild(this.notification);
 
 		this.addSprites();
 
@@ -52,22 +54,22 @@ var PlayScreen = me.ScreenObject.extend({
 	},
 
 	addSprites: function() {
-		var scale = 1/this.currentNodes.length;
+		var scale = 1/this.timelines.length;
 		var font = this.font;
-		this.currentNodeSprites = this.currentNodes.map(function(e, i){
+		this.timelinesprites = this.timelines.map(function(e, i){
 			var s = new StoryRenderable(e, font);
 			s.scale(scale, scale);
 			s.pos.y = window.app.screenHeight/2 - s.image.height * .5 * scale;
 			s.pos.x = i * s.image.width * scale + 10 * i;
 			return s;
 		});
-		this.currentNodeSprites.forEach(function(e){
+		this.timelinesprites.forEach(function(e){
 			me.game.world.addChild(e);
 		});
 	},
 
 	clearSprites: function() {
-		this.currentNodeSprites.map(function(e){
+		this.timelinesprites.map(function(e){
 			me.game.world.removeChild(e);
 		});
 	},
@@ -75,16 +77,27 @@ var PlayScreen = me.ScreenObject.extend({
 	makeChoice: function() {
 		this.clearSprites();
 		var newNodes = [];
+		var maxTimelines = this.timelines.length >= 7;
+		if(this.actionA && this.actionB) {
+			if(maxTimelines) {
+				this.notification.setText("TIME SEEMS TO MOVE IN ONE DIRECTION");
+			}
+			else {
+				this.notification.setText("OMG YOU SPLIT THE TIMELINE");
+			}
+		}
+
 		if(this.actionA) {
-			newNodes.push(this.currentNodes[this.focusedNodeIndex].left.node);
+			newNodes.push(this.timelines[this.focusedNodeIndex].left.node);
 		}
-		if(this.actionB) {
-			newNodes.push(this.currentNodes[this.focusedNodeIndex].right.node);
+		// TODO? SHOULD IT BE RANDOM WHICH WAY IT GOES IF YOU PICK TWO
+		if(this.actionB && (!this.actionA || !maxTimelines)) {
+			newNodes.push(this.timelines[this.focusedNodeIndex].right.node);
 		}
-		this.currentNodes.shift();
+		this.timelines.shift();
 		// insert new nodes at the start
 		// TODO figure out scaling here
-		this.currentNodes.splice.apply(this.currentNodes, [0, 0].concat(newNodes));
+		this.timelines.splice.apply(this.timelines, [0, 0].concat(newNodes));
 		this.addSprites();
 		me.game.world.sort(true);
 		this.clearButtons();
