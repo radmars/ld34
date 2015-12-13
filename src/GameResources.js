@@ -35,6 +35,9 @@ var GameResources = (function() {
 		_Image( "intro_radmars2" ),
 		_Audio( "radmarslogo" ),
 
+		// audio tracks
+		//_Audio( "ld34-full-v1"),
+
 		// title screen
 		_Image("splash"),
 		_Image("introcta"),
@@ -46,9 +49,9 @@ var GameResources = (function() {
 		_Image("screen3"),
 
 		// ui
-		_Image("8x8_font"),
+		//_Image("8x8_font"),
 		_Image("16x16_font"),
-		_Image("32x32_font"),
+		//_Image("32x32_font"),
 	];
 
 	/*

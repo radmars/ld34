@@ -79,6 +79,7 @@ function Story() {
 	// First past creates nodes.
 	Object.keys(data).forEach(function(e) {
 		this.nodes[e] = new Node(data[e]);
+		this.nodes[e].name = e;
 	}.bind(this));
 
 	// Second pass replace node name with reference.

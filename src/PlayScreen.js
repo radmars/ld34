@@ -2,7 +2,7 @@
 
 function Timeline(n, font){
 	this.node = n;
-	this.sprite = new StoryRenderable(n, font);
+	this.sprite = new StoryRenderable(n, font, window.app.screenWidth, window.app.screenHeight);
 };
 
 Timeline.prototype.right = function() {
@@ -80,16 +80,35 @@ var PlayScreen = me.ScreenObject.extend({
 		timeline.activate();
 	},
 
+	mergeTimelines: function() {
+		var seen = {};
+		var removed = [];
+		this.timelines = this.timelines.filter((e) => {
+			if(!seen[e.node.name]) {
+				seen[e.node.name] = 1;
+				return true;
+			}
+			removed.push(e);
+			return false;
+		});
+
+		removed.forEach((e) => {
+			e._current = false;
+			new me.Tween(e.sprite)
+				.to({alpha: 0}, 1000)
+				.onComplete(() => {
+					e.destroy()
+				})
+				.start();
+		});
+
+		return removed.length > 0;
+	},
+
 	makeChoice: function() {
 		var maxTimelines = this.timelines.length >= 7;
-		if(this.actionA && this.actionB) {
-			if(maxTimelines) {
-				this.notification.setText("TIME SEEMS TO MOVE IN ONE DIRECTION");
-			}
-			else {
-				this.notification.setText("OMG YOU SPLIT THE TIMELINE");
-			}
-		}
+		var startinTimelines = this.timelines.length;
+		var tryToSplit = this.actionA && this.actionB;
 
 		var newNodes = [];
 		if(this.actionA) {
@@ -104,6 +123,22 @@ var PlayScreen = me.ScreenObject.extend({
 		if(newNodes.length > 1 && !maxTimelines){
 			this.addTimeline(newNodes[1], this.currentTimeline + 1);
 		}
+
+		// Now that we've added/updated timelines, merge dupes to lowest index variant
+		var merged = this.mergeTimelines();
+
+		if(merged) {
+			this.notification.setText("THINGS ARE COMING TOGETHER...");
+		}
+		else {
+			if(tryToSplit && maxTimelines) {
+				this.notification.setText("TIME SEEMS TO MOVE IN ONE DIRECTION");
+			}
+			else if(tryToSplit) {
+				this.notification.setText("OMG YOU SPLIT THE TIMELINE");
+			}
+		}
+
 		me.game.world.sort(true);
 
 		this.currentTimeline = ((this.currentTimeline + 1) % this.timelines.length);
