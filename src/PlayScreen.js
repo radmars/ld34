@@ -102,7 +102,7 @@ var PlayScreen = me.ScreenObject.extend({
 
 	relayout: function() {
 		this.timelines.forEach((t, i) => {
-			t.sprite.setPosition(i, this.currentTimeline);
+			t.sprite.setPosition(i, this.currentTimeline, this.timelines.length);
 		});
 	},
 
@@ -139,7 +139,7 @@ var PlayScreen = me.ScreenObject.extend({
 			new me.Tween(e.sprite)
 				.to({alpha: 0}, 1000)
 				.onComplete(() => {
-					e.destroy()
+					e.destroy();
 				})
 				.start();
 		});

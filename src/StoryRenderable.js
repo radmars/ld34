@@ -17,9 +17,10 @@ var StoryRenderable = me.Renderable.extend({
 		this.pos.x = cw / 2;
 		this.pos.y = ch / 2;
 		this.rescale(.8);
-		this.reposition(0, .8);
+		this.reposition(0, 0, 0, 1);
 		this.alpha = 0;
-		new me.Tween(this).to({alpha: 1 }, 1000).start();
+
+		new me.Tween(this).to({alpha: 1 }, 200).start();
 	},
 
 	/**
@@ -46,16 +47,28 @@ var StoryRenderable = me.Renderable.extend({
 	rescale: function(newScale) {
 		if(this.scaleTween) { this.scaleTween.stop() }
 		this.scaleTween = new me.Tween(this)
-			.to({_localScale: newScale}, 1000)
+			.to({_localScale: newScale}, 1)
 			.onUpdate(() => { this.getImage().scale(this._localScale, this._localScale); })
 			.start();
 	},
 
 	/** Offset in layout list (hacks sigh) */
-	reposition: function(offset, newScale) {
+	reposition: function(current, index, length, newScale) {
 		var image = this.getImage();
 
-		if(this.positionTween) { this.positionTween.stop() }
+		var screenW = window.app.screenWidth;
+		var screenH = window.app.screenHeight;
+		var w = image.width;
+		var h = image.height;
+		var padding = 10;
+
+		this.pos.y = screenH/2 - h * .5 * newScale;
+		this.pos.x = ( screenW*0.5 - length*0.5*w*newScale - (padding*0.5 * length*0.5))  +  index * w * newScale + padding * index;
+
+		/*
+		var offset = current - index;
+
+		 if(this.positionTween) { this.positionTween.stop() }
 		this.positionTween = new me.Tween(this.pos)
 			.to({
 				y: window.app.screenHeight/2 - (
@@ -63,16 +76,21 @@ var StoryRenderable = me.Renderable.extend({
 					+ image.height / 2 * newScale
 				),
 				x: window.app.screenWidth/2 - image.width / 2 * newScale,
-			})
+			}, 1)
 			.start();
+		*/
 	},
 
-	setPosition: function(index, current) {
+	setPosition: function(index, current, length) {
 		this._current = index == current;
 		var depth = Math.abs(current - index);
-		var newScale = this._current? .8 : .4;
+
+		var newScale = 1/(length*0.6); //this._current? 1.0 : .25;
+		if(newScale > 1) newScale =1;
+
 		this.z = 5 - depth;
-		this.reposition(current - index, newScale);
+
+		this.reposition(current, index, length, newScale);
 		this.rescale(newScale);
 	},
 
