@@ -7,6 +7,7 @@
 function Node(settings) {
 	this.bg = settings.bg;
 	this.name = settings.name;
+	this.sprites = settings.sprites || function() {return {}};
 	this.right = settings.right;
 	this.left = settings.left;
 }
@@ -33,6 +34,11 @@ function Story() {
 	 */
 	 this.addNode('start', {
 		bg: 'start',
+		sprites: function(state) {
+			return {
+				intro_glasses1: new me.Vector2d(.5, .5),
+			};
+		},
 		left: function(state) {
 			return {
 				node: 'screen1',

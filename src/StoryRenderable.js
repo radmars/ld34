@@ -81,6 +81,21 @@ var StoryRenderable = me.Renderable.extend({
 		image.alpha = this.alpha;
 		image.draw(ctx);
 
+		var w = image.width * this._localScale;
+		var h = image.height * this._localScale;
+
+		/* Sprites is name => Vector2d of normalized position */
+		var sprites = this._node.sprites(this.state);
+		Object.keys(sprites).forEach((name) => {
+			var sprite = me.loader.getImage(name);
+			var sp = sprites[name];
+			ctx.drawImage( sprite,
+				this.pos.x + sp.x * w - sprite.width / 2,
+				this.pos.y + sp.y * h - sprite.height / 2,
+				sprite.width * this._localScale,
+				sprite.height * this._localScale
+			);
+		});
 
 		/* These are the results of the left/right callback functions.
 			{
@@ -93,8 +108,6 @@ var StoryRenderable = me.Renderable.extend({
 		var left = this._node.left(this.state);
 		var right = this._node.right(this.state);
 		if(this._current) {
-			var w = image.width * this._localScale;
-			var h = image.height * this._localScale;
 			var lp = left.pos;
 			var rp = right.pos;
 			this.font.draw(ctx, left.str.toUpperCase(), this.pos.x + lp.x *w, this.pos.y + lp.y * h);
