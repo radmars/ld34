@@ -1,5 +1,25 @@
 "use strict";
 
+var DeathClock = me.Renderable.extend({
+	init: function(x, y, font) {
+		this._super(me.Renderable, 'init', [x, y, window.app.screenWidth, window.app.screenHeight]);
+		this.anchorPoint = new me.Vector2d(0, 0);
+		this.remainingTime = 300;
+		this.font = font;
+		this.tween = new me.Tween(this).to({
+			remainingTime: 0,
+		}, this.remainingTime * 1000).onComplete(() => {
+			throw "GG BRO";
+		}).start()
+		this.z = 5;
+		this.font = new me.BitmapFont("16x16_font", 16);
+	},
+
+	draw: function(ctx) {
+		this.font.draw(ctx, `DEATHCLOCK: ${Math.floor(this.remainingTime)}`, this.pos.x, this.pos.y);
+	}
+});
+
 function Timeline(n, font, state, story){
 	this.node = n;
 	this.state = state;
@@ -65,6 +85,7 @@ var PlayScreen = me.ScreenObject.extend({
 
 		me.game.world.addChild(new BGColor());
 		me.game.world.addChild(this.notification);
+		me.game.world.addChild(new DeathClock(10, 10, this.font));
 
 		this.addTimeline(this.story.getNode(this.startNode));
 		this.relayout();
