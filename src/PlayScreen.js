@@ -87,6 +87,14 @@ var PlayScreen = me.ScreenObject.extend({
 		me.game.world.addChild(this.notification);
 		me.game.world.addChild(new DeathClock(10, 10, this.font));
 
+		this.audioFadeVolume = 0.8;
+		this.audioFadeMS = 1000;
+		this.audioTotalTracks = 5;
+
+		for (var i = 1; i <= this.audioTotalTracks; i++) {
+			me.audio.play("ld34-" + i, true, null, 0.0);
+		}
+
 		this.addTimeline(this.story.getNode(this.startNode));
 		this.relayout();
 		this.clearButtons();
@@ -107,6 +115,11 @@ var PlayScreen = me.ScreenObject.extend({
 		var timeline = new Timeline(node, this.font, this.state, this.story);
 		this.timelines.splice(position, 0, timeline);
 		timeline.activate();
+
+		var audioIndex = this.timelines.length;
+		if (audioIndex <= this.audioTotalTracks) {
+			me.audio.fade("ld34-" + audioIndex, 0.0, this.audioFadeVolume, this.audioFadeMS);
+		}
 	},
 
 	mergeTimelines: function() {
@@ -130,6 +143,14 @@ var PlayScreen = me.ScreenObject.extend({
 				})
 				.start();
 		});
+
+		// fade out tracks that correspond to removed timelines
+		var curLength = this.timelines.length;
+		for (var audioIndex = curLength + 1; audioIndex < curLength + removed.length + 1; audioIndex++) {
+			if (audioIndex <= this.audioTotalTracks) {
+				me.audio.fade("ld34-" + audioIndex, this.audioFadeVolume, 0.0, this.audioFadeMS);
+			}
+		}
 
 		return removed.length > 0;
 	},
@@ -201,6 +222,8 @@ var PlayScreen = me.ScreenObject.extend({
 	},
 
 	onDestroyEvent: function() {
-		me.audio.stopTrack();
+		for (var i = 1; i <= this.audioTotalTracks; i++) {
+			me.audio.stop("ld34-" + i);
+		}
 	},
 });

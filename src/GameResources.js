@@ -52,6 +52,12 @@ var GameResources = (function() {
 		//_Image("8x8_font"),
 		_Image("16x16_font"),
 		//_Image("32x32_font"),
+
+		_Audio("ld34-1"),
+		_Audio("ld34-2"),
+		_Audio("ld34-3"),
+		_Audio("ld34-4"),
+		_Audio("ld34-5"),
 	];
 
 	/*
