@@ -19,7 +19,6 @@ var StoryRenderable = me.Renderable.extend({
 		this.rescale(.8);
 		this.reposition(0, 0, 0, 1);
 		this.alpha = 0;
-
 		new me.Tween(this).to({alpha: 1 }, 200).start();
 	},
 
@@ -65,6 +64,12 @@ var StoryRenderable = me.Renderable.extend({
 		this.pos.y = screenH/2 - h * .5 * newScale;
 		this.pos.x = ( screenW*0.5 - length*0.5*w*newScale - (padding*0.5 * length*0.5))  +  index * w * newScale + padding * index;
 
+		if(this._current){
+			new me.Tween(this).to({alpha: 1 }, 200).start();
+		}else{
+			new me.Tween(this).to({alpha: 0.5 }, 200).start();
+		}
+
 		/*
 		var offset = current - index;
 
@@ -85,8 +90,26 @@ var StoryRenderable = me.Renderable.extend({
 		this._current = index == current;
 		var depth = Math.abs(current - index);
 
-		var newScale = 1/(length*0.6); //this._current? 1.0 : .25;
-		if(newScale > 1) newScale =1;
+		var newScale = 1;
+
+		switch(length){
+			case 1:
+				newScale = 1;
+				break;
+			case 2:
+				newScale = 0.85;
+				break;
+			case 3:
+				newScale = 0.55;
+				break;
+			case 4:
+				newScale = 0.42;
+				break;
+			default:
+				newScale = 0.2;
+
+		}
+
 
 		this.z = 5 - depth;
 
