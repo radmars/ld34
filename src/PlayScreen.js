@@ -169,6 +169,15 @@ var PlayScreen = me.ScreenObject.extend({
 			newNodes.push(focused.choose('right'));
 		}
 
+		if(this.actionA && !this.actionB) {
+			me.audio.play("select-L");
+			me.audio.play("footsteps-L");
+		}
+		else if(this.actionB && !this.actionA) {
+			me.audio.play("select-R");
+			me.audio.play("footsteps-R");
+		}
+
 		// TODO: Should it pick a random node for each timeline in a split?
 		this.advanceTimeline(this.currentTimeline, newNodes[0]);
 		if(newNodes.length > 1 && !maxTimelines){
@@ -180,6 +189,7 @@ var PlayScreen = me.ScreenObject.extend({
 
 		if(merged) {
 			this.notification.setText("THINGS ARE COMING TOGETHER...");
+			me.audio.play("merge");
 		}
 		else {
 			if(tryToSplit && maxTimelines) {
@@ -187,6 +197,7 @@ var PlayScreen = me.ScreenObject.extend({
 			}
 			else if(tryToSplit) {
 				this.notification.setText("OMG YOU SPLIT THE TIMELINE");
+				me.audio.play("split");
 			}
 		}
 

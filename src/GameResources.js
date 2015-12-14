@@ -58,6 +58,27 @@ var GameResources = (function() {
 		_Audio("ld34-3"),
 		_Audio("ld34-4"),
 		_Audio("ld34-5"),
+
+		_Audio("button"),
+		_Audio("cargobayflush"),
+		_Audio("footsteps-L"),
+		_Audio("footsteps-R"),
+		_Audio("gameover"),
+		_Audio("gremlin-approach"),
+		_Audio("gremlin-death"),
+		_Audio("large-explosion"),
+		_Audio("lazer"),
+		_Audio("merge"),
+		_Audio("monster-approach"),
+		_Audio("monster-death"),
+		_Audio("ogre-approach"),
+		_Audio("ogre-death"),
+		_Audio("ogre-smash"),
+		_Audio("radmarslogo"),
+		_Audio("select-L"),
+		_Audio("select-R"),
+		_Audio("split"),
+		_Audio("vacuum"),
 	];
 
 	/*
