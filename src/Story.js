@@ -506,8 +506,8 @@ function Story() {
 		bg: 'console_bridge_2',
 		left: function(state) {
 			return {
-				node: 'boot',
-				str: "start",
+				node: 'start',
+				str: "boot",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
