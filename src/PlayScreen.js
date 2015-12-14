@@ -213,15 +213,11 @@ var PlayScreen = me.ScreenObject.extend({
 
 		this.timelines.forEach((e) => {
 
-			if(e.node == node){
-
-			}else{
-				new me.Tween(e.sprite)
-					.to({alpha: 0}, 500)
-					.onComplete(() => {
-					e.destroy();
-					}).start();
-			}
+			new me.Tween(e.sprite)
+				.to({alpha: 0}, 500)
+				.onComplete(() => {
+				e.destroy();
+				}).start();
 
 		});
 
