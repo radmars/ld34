@@ -10,6 +10,13 @@ function Node(settings) {
 	this.left = settings.left;
 }
 
+/** Returns the name of the next node and runs the select handler for the direction provided */
+Node.prototype.select = function(direction, state) {
+	var choiceInfo = this[direction](state);
+	choiceInfo.select();
+	return choiceInfo.node;
+};
+
 /**
  * Story is a tree-like structure. Probably should just call it a graph.
  * Nodes have left and right and can reference other nodes to create merges,
@@ -17,81 +24,139 @@ function Node(settings) {
  * @class
  */
 function Story() {
-	this.nodes = { };
-	var data = {
-		start: {
-			bg: 'start',
-			left: {
-				node: 'screen1',
-				str: "one",
-				pos: new me.Vector2d(0.1, 0.75),
-			},
-			right: {
-				node: 'screen2',
-				str: "two",
-				pos: new me.Vector2d(0.8, 0.75),
-			},
-		},
-		screen1: {
-			bg: 'screen1',
-			left: {
-				node: 'screen3',
-				str: "run",
-				pos: new me.Vector2d(0.2, 0.70),
-			},
-			right: {
-				node: 'screen2',
-				str: "open",
-				pos: new me.Vector2d(0.7, 0.55),
-			},
-		},
-		screen2: {
-			bg: 'screen2',
-			left: {
-				node: 'screen1',
-				str: "activate",
-				pos: new me.Vector2d(0.35, 0.65),
-			},
-			right: {
-				node: 'screen3',
-				str: "unplug",
-				pos: new me.Vector2d(0.66, 0.60),
-			},
-		},
-		screen3: {
-			bg: 'screen3',
-			left: {
-				node: 'start',
-				str: "one",
-				pos: new me.Vector2d(0.1, 0.75),
-			},
-			right: {
-				node: 'screen2',
-				str: "two",
-				pos: new me.Vector2d(0.8, 0.75),
-			},
-		},
-		radmars: {
-			bg: 'intro_mars.png',
-		}
-	};
+	this.nodes = {};
 
-	// First past creates nodes.
-	Object.keys(data).forEach(function(e) {
-		this.nodes[e] = new Node(data[e]);
-		this.nodes[e].name = e;
-	}.bind(this));
+	/*
+	 	State is the "state" of the playscreen object.
+		positions are relative to the image on screen and scaled.
+	 */
+	 this.addNode('start', {
+		bg: 'start',
+		left: function(state) {
+			return {
+				node: 'screen1',
+				str: "ogre",
+				select: function() {
+					state.pickedOgre = true;
+				},
+				pos: new me.Vector2d(0.1, 0.75),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'screen2',
+				str: "cat",
+				select: function() {
+					state.pickedCat = true;
+				},
+				pos: new me.Vector2d(0.8, 0.75),
+			};
+		},
+	});
 
-	// Second pass replace node name with reference.
-	Object.keys(data).forEach(function(e) {
-		var n = this.nodes[e];
-		['left','right'].forEach(function(side){
-			if(n[side]) {
-				n[side].node = this.nodes[n[side].node];
+	 this.addNode('screen1', {
+		bg: 'screen1',
+		left: function(state) {
+			if(state.pickedOgre) {
+				return {
+					node: 'screen3',
+					str: "ogrebattle",
+					select: function(){
+						state.killedOgre = true;
+					},
+					pos: new me.Vector2d(0.2, 0.70),
+				};
 			}
-		}.bind(this));
-	}.bind(this));
+			else {
+				throw "Shouldn't be possible";
+			}
+		},
+		right: function(state) {
+			return {
+				node: 'start',
+				str: "retreat",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	});
+
+	this.addNode('screen2', {
+		bg: 'screen2',
+		left: function(state) {
+			if(state.pickedCat) {
+				return {
+					node: 'screen3',
+					str: "catfight",
+					select: function(){
+						state.killedCat = true;
+					},
+					pos: new me.Vector2d(0.2, 0.70),
+				};
+			}
+			else {
+				throw "Shouldn't be possible";
+			}
+		},
+		right: function(state) {
+			return {
+				node: 'start',
+				str: "retreat",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	});
+
+	this.addNode('screen3', {
+		bg: 'screen3',
+		left: function(state) {
+			if(state.killedCat) {
+				return {
+					node: 'start',
+					str: "cathat",
+					select: function(){
+						Object.keys(state).forEach((k) => { delete state[k]; })
+						me.state.current().notification.setText("GG CATMAN");
+					},
+					pos: new me.Vector2d(0.2, 0.70),
+				};
+			}
+			else if(state.killedOgre) {
+				return {
+					node: 'start',
+					str: "ogrecorpse",
+					select: function(){
+						Object.keys(state).forEach((k) => { delete state[k]; })
+						me.state.current().notification.setText("EEE GAH");
+					},
+					pos: new me.Vector2d(0.2, 0.70),
+				};
+			}
+			else {
+				throw "Shouldn't be possible";
+			}
+		},
+		right: function(state) {
+			return {
+				node: 'start',
+				str: "naptime",
+				select: function(){
+					Object.keys(state).forEach((k) => { delete state[k]; })
+					me.state.current().notification.setText("reset!");
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	})
 }
+
+Story.prototype.addNode = function(name, def) {
+	def.name = name;
+	this.nodes[name] = new Node(def);
+};
 
 /** @return Node */
 Story.prototype.getNode = function(name) {

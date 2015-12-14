@@ -1,8 +1,14 @@
 "use strict";
 var StoryRenderable = me.Renderable.extend({
-	init: function(node, font, cw, ch) {
+	init: function(settings) {
+		var font = settings.font;
+		var state = settings.state;
+		var node = settings.node;
+		var cw = settings.screenWidth;
+		var ch = settings.screenHeight;
 		this._super(me.Renderable, 'init', [0, 0, cw, ch]);
-		this.node = node;
+		this.state = state;
+		this._node = node;
 		this.font = font;
 		this.imageCache = {};
 		this._localScale = 0;
@@ -16,8 +22,15 @@ var StoryRenderable = me.Renderable.extend({
 		new me.Tween(this).to({alpha: 1 }, 1000).start();
 	},
 
+	/**
+	 * Change what node we're lookin at.
+	 */
+	setNode: function(node) {
+		this._node = node;
+	},
+
 	getImage: function() {
-		var bg = this.node.bg;
+		var bg = this._node.bg;
 		var cache = this.imageCache;
 		if(!cache[bg]) {
 			var image = new me.Sprite(0, 0, {
@@ -68,13 +81,24 @@ var StoryRenderable = me.Renderable.extend({
 		image.alpha = this.alpha;
 		image.draw(ctx);
 
-		if(this.node.left && this._current) {
+
+		/* These are the results of the left/right callback functions.
+			{
+			 str: "text",
+			 pos: Vector2d
+			 select: function()
+			 node: "dest node name"
+			}
+		*/
+		var left = this._node.left(this.state);
+		var right = this._node.right(this.state);
+		if(this._current) {
 			var w = image.width * this._localScale;
 			var h = image.height * this._localScale;
-			var lp = this.node.left.pos;
-			var rp = this.node.right.pos;
-			this.font.draw(ctx, this.node.left.str.toUpperCase(), this.pos.x + lp.x *w, this.pos.y + lp.y * h);
-			this.font.draw(ctx, this.node.right.str.toUpperCase(), this.pos.x + rp.x *w, this.pos.y + rp.y * h);
+			var lp = left.pos;
+			var rp = right.pos;
+			this.font.draw(ctx, left.str.toUpperCase(), this.pos.x + lp.x *w, this.pos.y + lp.y * h);
+			this.font.draw(ctx, right.str.toUpperCase(), this.pos.x + rp.x *w, this.pos.y + rp.y * h);
 		}
 	},
 });

@@ -1,21 +1,26 @@
 "use strict";
 
-function Timeline(n, font){
+function Timeline(n, font, state, story){
 	this.node = n;
-	this.sprite = new StoryRenderable(n, font, window.app.screenWidth, window.app.screenHeight);
+	this.state = state;
+	this.story = story;
+	this.sprite = new StoryRenderable({
+		node: n,
+		font: font,
+		state: state,
+		screenWidth: window.app.screenWidth,
+		screenHeight: window.app.screenHeight,
+
+	});
 };
 
-Timeline.prototype.right = function() {
-	return this.node.right.node;
-}
-
-Timeline.prototype.left = function() {
-	return this.node.left.node;
+Timeline.prototype.choose = function(direction) {
+	return this.story.getNode(this.node.select(direction, this.state));
 }
 
 Timeline.prototype.progress = function(next) {
 	this.node = next;
-	this.sprite.node = next;
+	this.sprite.setNode(next);
 }
 
 Timeline.prototype.activate = function() {
@@ -37,6 +42,9 @@ var PlayScreen = me.ScreenObject.extend({
 		this.font = new me.BitmapFont("16x16_font", 16);
 		this.font.set("center");
 		this.notification = new Notification();
+
+		/* Nodes manipulate this. */
+		this.state = {};
 	},
 
 	endGame: function(){
@@ -75,7 +83,7 @@ var PlayScreen = me.ScreenObject.extend({
 	 */
 	addTimeline: function(node, position) {
 		position = position || 0;
-		var timeline = new Timeline(node, this.font)
+		var timeline = new Timeline(node, this.font, this.state, this.story);
 		this.timelines.splice(position, 0, timeline);
 		timeline.activate();
 	},
@@ -110,12 +118,13 @@ var PlayScreen = me.ScreenObject.extend({
 		var startinTimelines = this.timelines.length;
 		var tryToSplit = this.actionA && this.actionB;
 
+		var focused = this.timelines[this.currentTimeline];
 		var newNodes = [];
 		if(this.actionA) {
-			newNodes.push(this.timelines[this.currentTimeline].left());
+			newNodes.push(focused.choose('left'));
 		}
 		if(this.actionB) {
-			newNodes.push(this.timelines[this.currentTimeline].right());
+			newNodes.push(focused.choose('right'));
 		}
 
 		// TODO: Should it pick a random node for each timeline in a split?
