@@ -6,6 +6,7 @@
  */
 function Node(settings) {
 	this.bg = settings.bg;
+	this.name = settings.name;
 	this.right = settings.right;
 	this.left = settings.left;
 }
