@@ -13,6 +13,12 @@ var StoryRenderable = me.Renderable.extend({
 		this.imageCache = {};
 		this._localScale = 0;
 
+		if( this._node.death == true ){
+			this.death = true;
+		}else{
+			this.death = false;
+		}
+
 		var image = this.getImage();
 		this.pos.x = cw / 2;
 		this.pos.y = ch / 2;
@@ -27,6 +33,13 @@ var StoryRenderable = me.Renderable.extend({
 	 */
 	setNode: function(node) {
 		this._node = node;
+
+		if( this._node.death == true ){
+			this.death = true;
+		}else{
+			this.death = false;
+		}
+		console.log("node name " + this._node.name);
 	},
 
 	getImage: function() {
@@ -146,13 +159,18 @@ var StoryRenderable = me.Renderable.extend({
 			 node: "dest node name"
 			}
 		*/
-		var left = this._node.left(this.state);
-		var right = this._node.right(this.state);
-		if(this._current) {
-			var lp = left.pos;
-			var rp = right.pos;
-			this.font.draw(ctx, left.str.toUpperCase(), this.pos.x + lp.x *w, this.pos.y + lp.y * h);
-			this.font.draw(ctx, right.str.toUpperCase(), this.pos.x + rp.x *w, this.pos.y + rp.y * h);
+
+		if( this._node.left != null ){
+			var left = this._node.left(this.state);
+			var right = this._node.right(this.state);
+			if(this._current) {
+				var lp = left.pos;
+				var rp = right.pos;
+				this.font.draw(ctx, left.str.toUpperCase(), this.pos.x + lp.x *w, this.pos.y + lp.y * h);
+				this.font.draw(ctx, right.str.toUpperCase(), this.pos.x + rp.x *w, this.pos.y + rp.y * h);
+			}
 		}
+
+
 	},
 });

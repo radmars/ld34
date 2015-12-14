@@ -32,7 +32,32 @@ function Story() {
 	 	State is the "state" of the playscreen object.
 		positions are relative to the image on screen and scaled.
 	 */
-	 
+
+	this.addNode('death', {
+		bg: 'red_dead',
+		death: true,
+
+		left: function(state) {
+			return {
+				node: 'start',
+				str: "restart",
+				select: function() {
+				},
+				pos: new me.Vector2d(0.1, 0.75),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'start',
+				str: "restart",
+				select: function() {
+				},
+				pos: new me.Vector2d(0.8, 0.75),
+			};
+		},
+
+	}); //dead
+
 	//start
 	
 	this.addNode('start', {
@@ -70,7 +95,7 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "free",
 				select: function(){
 				},
@@ -114,7 +139,7 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "drink",
 				select: function(){
 				},
@@ -171,7 +196,7 @@ function Story() {
 		bg: 'cargo_bay_monster',
 		left: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "death",
 				select: function(){
 				},
@@ -180,7 +205,7 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "death",
 				select: function(){
 				},
@@ -202,7 +227,7 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "open",
 				select: function(){
 				},
@@ -395,7 +420,7 @@ function Story() {
 		bg: 'bridge_no_shield',
 		left: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "death",
 				select: function(){
 				},
@@ -404,7 +429,7 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "death",
 				select: function(){
 				},
@@ -439,7 +464,7 @@ function Story() {
 		bg: 'engine_room_computer',
 		left: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "drive",
 				select: function(){
 				},
@@ -616,7 +641,7 @@ function Story() {
 		bg: 'bridge_shield',
 		left: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "Helm",
 				select: function(){
 				},
@@ -638,7 +663,7 @@ function Story() {
 		bg: 'hallway',
 		left: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "go back",
 				select: function(){
 				},
@@ -662,7 +687,7 @@ function Story() {
 		bg: 'cargo_bay',
 		left: function(state) {
 			return {
-				node: 'start',
+				node: 'death',
 				str: "TBD",
 				select: function(){
 				},
@@ -772,6 +797,7 @@ function Story() {
 	});
 	*/
 
+	/*
 	this.addNode('screen2', {
 		bg: 'screen2',
 		left: function(state) {
@@ -841,6 +867,7 @@ function Story() {
 			};
 		},
 	})
+	*/
 }
 
 Story.prototype.addNode = function(name, def) {

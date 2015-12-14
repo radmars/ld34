@@ -209,8 +209,37 @@ var PlayScreen = me.ScreenObject.extend({
 		this.clearButtons();
 	},
 
+	death: function(node){
+
+		this.timelines.forEach((e) => {
+
+			if(e.node == node){
+
+			}else{
+				new me.Tween(e.sprite)
+					.to({alpha: 0}, 500)
+					.onComplete(() => {
+					e.destroy();
+					}).start();
+			}
+
+		});
+
+
+		this.timelines = [];
+		this.currentTimeline = 0;
+		this.addTimeline(this.story.getNode(this.startNode));
+		this.relayout();
+		this.clearButtons();
+
+	},
+
 	advanceTimeline: function(index, selection) {
 		this.timelines[index].progress(selection);
+
+		if(selection.name == "death"){
+			this.death(selection);
+		}
 	},
 
 	/** Clear button timers */
