@@ -26,7 +26,7 @@ var DeathClock = me.Renderable.extend({
 		var divisor_for_seconds = divisor_for_minutes % 60;
 		var seconds = Math.ceil(divisor_for_seconds);
 
-		this.font.draw(ctx, "PORTAL CONTACT: " + minutes + ":" + seconds, this.pos.x, this.pos.y);
+		this.font.draw(ctx, "PORTAL CONTACT: " + minutes + ":" + ('00' + seconds).slice(-2), this.pos.x, this.pos.y);
 		//this.font.draw(ctx, `DEATHCLOCK: ${Math.floor(this.remainingTime)}`, this.pos.x, this.pos.y);
 	}
 });
