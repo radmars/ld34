@@ -233,24 +233,30 @@ var PlayScreen = me.ScreenObject.extend({
 
 	death: function(node){
 
+		var remove = null;
+
 		this.timelines.forEach((e) => {
-
-			new me.Tween(e.sprite)
-				.to({alpha: 0}, 500)
-				.onComplete(() => {
-				e.destroy();
-				}).start();
-
+			remove = e;
+			if(e.node.name == node.name){
+				new me.Tween(e.sprite)
+					.to({alpha: 0}, 500)
+					.onComplete(() => {
+					e.destroy();
+					}).start();
+			}
 		});
+
+		this.timelines.splice( this.timelines.indexOf(remove), 1 );
 
 		me.audio.play("gameover");
 
-		this.timelines = [];
-		this.currentTimeline = 0;
-		this.addTimeline(this.story.getNode(this.startNode));
-		this.relayout();
-		this.clearButtons();
-
+		if(this.timelines.length <= 0){
+			this.timelines = [];
+			this.currentTimeline = 0;
+			this.addTimeline(this.story.getNode(this.startNode));
+			this.relayout();
+			this.clearButtons();
+		}
 	},
 
 	advanceTimeline: function(index, selection) {
