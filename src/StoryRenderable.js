@@ -73,9 +73,31 @@ var StoryRenderable = me.Renderable.extend({
 		var w = image.width;
 		var h = image.height;
 		var padding = 10;
+		var nPerRow = 4;
+		var nRows = Math.ceil(length / nPerRow);
+		var row = Math.floor(index / nPerRow);
+		var rowOffset = 0;
+		var colOffset = 0;
+		var yPad = 0;
+		if(nRows > 1) {
+			if(row == 0) {
+				rowOffset = .5;
+				yPad = -5;
+			}
+			else {
+				yPad = 5;
+				rowOffset = -.5;
+				colOffset = nPerRow;
+			}
+		}
+		var onRow = length > 4 ? 4 : length;
 
-		this.pos.y = screenH/2 - h * .5 * newScale;
-		this.pos.x = ( screenW*0.5 - length*0.5*w*newScale - (padding*0.5 * length*0.5))  +  index * w * newScale + padding * index;
+		this.pos.y = screenH/2 - (h * (rowOffset + .5) * newScale) + yPad;
+		this.pos.x = ( screenW*0.5
+			- onRow*0.5*w*newScale
+			- (padding*0.5 * onRow*0.5)
+		)  +  (index - colOffset) * w * newScale
+			+ padding * (index-colOffset);
 
 		if(this._current){
 			new me.Tween(this).to({alpha: 1 }, 200).start();
@@ -115,12 +137,9 @@ var StoryRenderable = me.Renderable.extend({
 			case 3:
 				newScale = 0.55;
 				break;
-			case 4:
+			default:
 				newScale = 0.42;
 				break;
-			default:
-				newScale = 0.2;
-
 		}
 
 
