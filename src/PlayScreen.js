@@ -4,19 +4,30 @@ var DeathClock = me.Renderable.extend({
 	init: function(x, y, font) {
 		this._super(me.Renderable, 'init', [x, y, window.app.screenWidth, window.app.screenHeight]);
 		this.anchorPoint = new me.Vector2d(0, 0);
-		this.remainingTime = 300;
+		this.remainingTime = 119;
 		this.font = font;
 		this.tween = new me.Tween(this).to({
 			remainingTime: 0,
 		}, this.remainingTime * 1000).onComplete(() => {
-			throw "GG BRO";
-		}).start()
+			//throw "GG BRO";
+
+			me.state.change( me.state.GAMEOVER );
+			}).start()
 		this.z = 5;
 		this.font = new me.BitmapFont("16x16_font", 16);
 	},
 
 	draw: function(ctx) {
-		this.font.draw(ctx, `DEATHCLOCK: ${Math.floor(this.remainingTime)}`, this.pos.x, this.pos.y);
+
+
+		var divisor_for_minutes = this.remainingTime % (60 * 60);
+		var minutes = Math.floor(divisor_for_minutes / 60);
+
+		var divisor_for_seconds = divisor_for_minutes % 60;
+		var seconds = Math.ceil(divisor_for_seconds);
+
+		this.font.draw(ctx, "PORTAL CONTACT: " + minutes + ":" + seconds, this.pos.x, this.pos.y);
+		//this.font.draw(ctx, `DEATHCLOCK: ${Math.floor(this.remainingTime)}`, this.pos.x, this.pos.y);
 	}
 });
 
@@ -85,7 +96,7 @@ var PlayScreen = me.ScreenObject.extend({
 
 		me.game.world.addChild(new BGColor());
 		me.game.world.addChild(this.notification);
-		me.game.world.addChild(new DeathClock(10, 10, this.font));
+		me.game.world.addChild(new DeathClock(window.app.screenWidth*0.5 -175, 10, this.font));
 
 		this.audioFadeVolume = 0.8;
 		this.audioFadeMS = 1000;
@@ -119,6 +130,10 @@ var PlayScreen = me.ScreenObject.extend({
 		var audioIndex = this.timelines.length;
 		if (audioIndex <= this.audioTotalTracks) {
 			me.audio.fade("ld34-" + audioIndex, 0.0, this.audioFadeVolume, this.audioFadeMS);
+		}
+
+		if(node.name == "death"){
+			this.death(node);
 		}
 	},
 
@@ -258,6 +273,14 @@ var PlayScreen = me.ScreenObject.extend({
 	},
 
 	onDestroyEvent: function() {
+
+		this.timelines.forEach((e) => {
+			e.destroy();
+		});
+
+		this.timelines = [];
+		this.currentTimeline = 0;
+
 		for (var i = 1; i <= this.audioTotalTracks; i++) {
 			me.audio.stop("ld34-" + i);
 		}
