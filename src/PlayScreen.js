@@ -4,7 +4,7 @@ var DeathClock = me.Renderable.extend({
 	init: function(x, y, font) {
 		this._super(me.Renderable, 'init', [x, y, window.app.screenWidth, window.app.screenHeight]);
 		this.anchorPoint = new me.Vector2d(0, 0);
-		this.remainingTime = 119;
+		this.remainingTime = 208;
 		this.origRemainingTime = this.remainingTime;
 		this.font = font;
 		this.tween = new me.Tween(this).to({
@@ -106,7 +106,7 @@ var PlayScreen = me.ScreenObject.extend({
 		me.game.world.addChild(this.notification);
 		me.game.world.addChild(new DeathClock(window.app.screenWidth*0.5 -175, 10, this.font));
 
-		this.audioFadeVolume = 0.8;
+		this.audioFadeVolume = 0.85;
 		this.audioFadeMS = 1000;
 		this.audioTotalTracks = 5;
 
@@ -114,7 +114,7 @@ var PlayScreen = me.ScreenObject.extend({
 			me.audio.play("ld34-" + i, true, null, 0.0);
 		}
 		me.audio.play("alarm", true, null, 0.0);
-		me.audio.fade("alarm", 0.0, 0.4, 119 * 1000.0);
+		me.audio.fade("alarm", 0.0, 0.4, 208 * 1000.0);
 
 		this.addTimeline(this.story.getNode(this.startNode));
 		this.relayout();
