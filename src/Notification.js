@@ -6,7 +6,7 @@ var Notification = me.Renderable.extend({
 	init: function() {
 		this._super(me.Renderable, 'init', [0, 0, window.app.screenWidth, window.app.screenHeight]);
 		this.anchorPoint = new me.Vector2d(0, 0);
-		this.z = 5;
+		this.z = 50;
 		this.font = new me.BitmapFont("16x16_font", 16);
 	},
 
@@ -20,7 +20,7 @@ var Notification = me.Renderable.extend({
 			this.fader.stop();
 		}
 		this.fader = new me.Tween(this.font);
-		this.fader.to({ alpha : 0, }, 1500);
+		this.fader.to({ alpha : 0, }, 4500);
 		this.fader.onComplete(() => { this.text = null; }).start();
 	},
 
