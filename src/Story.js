@@ -68,7 +68,6 @@ function Story() {
 				node: 'startL',
 				str: "go left",
 				select: function() {
-					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.1, 0.75),
 			};
@@ -646,18 +645,20 @@ function Story() {
 		bg: 'space_streak',
 		left: function(state) {
 				return {
-				node: 'death',
+				node: 'flyAway',
 				str: "fly away",
 				select: function(){
+					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
 		},
 		right: function(state) {
 			return {
-				node: 'death',
+				node: 'flyAway',
 				str: "escape",
 				select: function(){
+					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -793,9 +794,10 @@ function Story() {
 		bg: 'space_ship_laser_win',
 		left: function(state) {
 			return {
-				node: 'explode',
+				node: 'laserWin',
 				str: "win",
 				select: function(){
+					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -805,6 +807,7 @@ function Story() {
 				node: 'laserWin',
 				str: "win and bm",
 				select: function(){
+					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -1092,6 +1095,7 @@ function Story() {
 				node: 'podWin',
 				str: "flee",
 				select: function(){
+					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -1100,7 +1104,8 @@ function Story() {
 			return {
 				node: 'podWin',
 				str: "escape",
-				select: function(){
+				select: function() {
+					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -1111,27 +1116,6 @@ function Story() {
 	
 	this.addNode('engine', {
 		bg: 'engine_room',
-		/*
-		left: function(state) {
-			if(state.haveGun) {
-				return {
-					node: 'gremlinTunnelGun',
-					str: "straight",
-					select: function(){
-				},
-				pos: new me.Vector2d(0.2, 0.70),
-				};
-			} else {
-				return {
-					node: 'gremlinTunnelNoGun',
-					str: "straight",
-					select: function(){
-				},
-				pos: new me.Vector2d(0.2, 0.70),
-				};
-			}
-		},
-		*/
 		left: function(state) {
 			if(state.haveCore) {
 				return {
