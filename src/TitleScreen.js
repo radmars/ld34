@@ -34,7 +34,7 @@ var TitleScreen = me.ScreenObject.extend({
 		this.bg.pos.x = cx - this.bg.width / 2;
 		this.bg.pos.y = cy - this.bg.height / 2;
 
-		this.hitenter = new HitEnter(window.app.screenWidth/2, window.app.screenHeight/2);
+		this.hitenter = new HitEnter(window.app.screenWidth/2, window.app.screenHeight/2 + 150);
 
 		me.game.world.addChild(new BGColor() );
 		me.game.world.addChild(this.bg );
@@ -69,7 +69,7 @@ var TitleScreen = me.ScreenObject.extend({
 var GameOverScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
 		this.bg = new me.Sprite( 0, 0, {
-			image: "splash",
+			image: "game_over",
 		});
 		var cx = window.app.screenWidth / 2;
 		var cy = window.app.screenHeight / 2;
@@ -77,7 +77,7 @@ var GameOverScreen = me.ScreenObject.extend({
 		this.bg.pos.x = cx - this.bg.width / 2;
 		this.bg.pos.y = cy - this.bg.height / 2;
 
-		this.hitenter = new HitEnter(window.app.screenWidth/2, window.app.screenHeight/2);
+		this.hitenter = new HitEnter(window.app.screenWidth/2, window.app.screenHeight/2 + 150);
 
 		me.game.world.addChild(new BGColor() );
 		me.game.world.addChild(this.bg );

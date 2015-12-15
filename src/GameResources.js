@@ -41,6 +41,8 @@ var GameResources = (function() {
 		// title screen
 		_Image("splash"),
 		_Image("introcta"),
+		_Image("game_over"),
+		
 
 		// game screens
 		_Image("red_dead"),
