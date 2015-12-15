@@ -264,13 +264,38 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'death',
+				node: 'space',
 				str: "open",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
 		},
+	}); //pod1
+	
+	this.addNode('space', {
+		bg: 'space',
+		left: function(state) {
+			return {
+				node: 'death',
+				str: "suffocate",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'death',
+				str: "freeze",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+		callback: function(state) {
+			me.audio.play("vacuum");
+		}
 	}); //pod1
 	
 	this.addNode('tunnel', {
