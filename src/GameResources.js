@@ -112,6 +112,7 @@ var GameResources = (function() {
 		_Audio("select-R"),
 		_Audio("split"),
 		_Audio("vacuum"),
+		_Audio("alarm"),
 	];
 
 	/*

@@ -5,13 +5,15 @@ var DeathClock = me.Renderable.extend({
 		this._super(me.Renderable, 'init', [x, y, window.app.screenWidth, window.app.screenHeight]);
 		this.anchorPoint = new me.Vector2d(0, 0);
 		this.remainingTime = 119;
+		this.origRemainingTime = this.remainingTime;
 		this.font = font;
 		this.tween = new me.Tween(this).to({
 			remainingTime: 0,
 		}, this.remainingTime * 1000).onComplete(() => {
 			//throw "GG BRO";
-
-			me.state.change( me.state.GAMEOVER );
+				me.audio.play("gameover");
+				me.state.change( me.state.GAMEOVER );
+				me.audio.stop("alarm");
 			}).start()
 		this.z = 5;
 		this.font = new me.BitmapFont("16x16_font", 16);
@@ -84,6 +86,7 @@ var PlayScreen = me.ScreenObject.extend({
 
 	endGame: function(){
 		me.audio.play("gameover");
+		me.audio.stop("alarm");
 		me.state.change( me.state.GAMEOVER );
 	},
 
@@ -110,6 +113,8 @@ var PlayScreen = me.ScreenObject.extend({
 		for (var i = 1; i <= this.audioTotalTracks; i++) {
 			me.audio.play("ld34-" + i, true, null, 0.0);
 		}
+		me.audio.play("alarm", true, null, 0.0);
+		me.audio.fade("alarm", 0.0, 0.6, 119 * 1000.0);
 
 		this.addTimeline(this.story.getNode(this.startNode));
 		this.relayout();
@@ -305,5 +310,6 @@ var PlayScreen = me.ScreenObject.extend({
 		for (var i = 1; i <= this.audioTotalTracks; i++) {
 			me.audio.stop("ld34-" + i);
 		}
+		me.audio.stop("alarm");
 	},
 });

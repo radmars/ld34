@@ -41,6 +41,10 @@ var TitleScreen = me.ScreenObject.extend({
 		me.game.world.addChild(this.hitenter);
 
 		me.audio.stopTrack();
+		me.audio.play("select-L");
+		me.audio.play("select-R");
+		me.audio.play("split");
+		me.audio.play("merge");
 		//me.audio.playTrack( "ld34-title", 0.7 );
 		//me.audio.play("micromancer");
 
