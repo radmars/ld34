@@ -83,6 +83,7 @@ var PlayScreen = me.ScreenObject.extend({
 	},
 
 	endGame: function(){
+		me.audio.play("gameover");
 		me.state.change( me.state.GAMEOVER );
 	},
 
@@ -242,6 +243,7 @@ var PlayScreen = me.ScreenObject.extend({
 
 		});
 
+		me.audio.play("gameover");
 
 		this.timelines = [];
 		this.currentTimeline = 0;
