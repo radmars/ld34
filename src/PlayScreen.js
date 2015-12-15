@@ -236,8 +236,8 @@ var PlayScreen = me.ScreenObject.extend({
 		var remove = null;
 
 		this.timelines.forEach((e) => {
-			remove = e;
 			if(e.node.name == node.name){
+				remove = e;
 				new me.Tween(e.sprite)
 					.to({alpha: 0}, 500)
 					.onComplete(() => {
@@ -246,9 +246,16 @@ var PlayScreen = me.ScreenObject.extend({
 			}
 		});
 
-		this.timelines.splice( this.timelines.indexOf(remove), 1 );
+		var oldLength = this.timelines.length;
+
+		var index = this.timelines.indexOf(remove);
+		this.timelines.splice( index, 1 );
 
 		me.audio.play("gameover");
+
+		if (oldLength > 1 && oldLength <= this.audioTotalTracks) {
+			me.audio.fade("ld34-" + oldLength, this.audioFadeVolume, 0.0, this.audioFadeMS);
+		}
 
 		if(this.timelines.length <= 0){
 			this.timelines = [];
