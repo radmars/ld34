@@ -68,6 +68,7 @@ function Story() {
 				node: 'startL',
 				str: "go left",
 				select: function() {
+					me.state.change(me.state.WIN)
 				},
 				pos: new me.Vector2d(0.1, 0.75),
 			};
@@ -99,7 +100,7 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'death',
+				node: 'tubeDudesAttack',
 				str: "free",
 				select: function(){
 					// gremlin
@@ -109,6 +110,33 @@ function Story() {
 			};
 		},
 	}); //startR
+	
+	this.addNode('tubeDudesAttack', {
+		bg: 'tube_dudes_attack',
+		left: function(state) {
+			return {
+				node: 'death',
+				str: "die painfully",
+				select: function(){
+					// ogre smash & appear
+					me.audio.play("ogre-approach");
+					me.audio.play("ogre-smash");
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'death',
+				str: "die quickly",
+				select: function(){
+					// gremlin
+					me.audio.play("gremlin-approach");
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	});	//tubeDudesAttack
 
 	this.addNode('startNoRubble', {
 		bg: 'start_no_rubble',
@@ -203,7 +231,7 @@ function Story() {
 		left: function(state) {
 			return {
 				node: 'death',
-				str: "death",
+				str: "get mauled",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
@@ -212,7 +240,7 @@ function Story() {
 		right: function(state) {
 			return {
 				node: 'death',
-				str: "death",
+				str: "get eaten",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.7, 0.55),
@@ -271,19 +299,30 @@ function Story() {
 	this.addNode('tunnelToEngine', {
 		bg: 'tube_dude_dead',
 		left: function(state) {
-			return {
-				node: 'gremlinTunnel',
-				str: "straight",
-				select: function(){
+			if(state.haveGun) {
+				return {
+					node: 'gremlinTunnelGun',
+					str: "straight",
+					select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
-			};
+				};
+			} else {
+				return {
+					node: 'gremlinTunnelNoGun',
+					str: "straight",
+					select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+				};
+			}
 		},
 		right: function(state) {
 			return {
 				node: 'tunnelToEngine2',
-				str: "loot",
+				str: "take gun",
 				select: function(){
+					state.haveGun = true;
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -294,7 +333,7 @@ function Story() {
 		bg: 'tube_dude_dead',
 		left: function(state) {
 			return {
-				node: 'gremlinTunnel',
+				node: 'gremlinTunnelGun',
 				str: "straight",
 				select: function(){
 				},
@@ -312,12 +351,34 @@ function Story() {
 		},
 	}); //tunnelToEngine2
 	
-	this.addNode('gremlinTunnel', {
+	this.addNode('gremlinTunnelNoGun', {
 		bg: 'tube_grem',
 		left: function(state) {
 			return {
-				node: 'gremlinTunnel',
-				str: "straight",
+				node: 'gremlinTunnelAttack',
+				str: "approach",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'tunnelToEngine',
+				str: "go back",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //gremlinTunnelNoGun
+	
+	this.addNode('gremlinTunnelGun', {
+		bg: 'tube_grem',
+		left: function(state) {
+			return {
+				node: 'gremlinTunnelDead',
+				str: "shoot",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
@@ -332,7 +393,53 @@ function Story() {
 				pos: new me.Vector2d(0.7, 0.55),
 			};
 		},
-	}); //gremlinTunnel
+	}); //gremlinTunnelGun
+	
+	this.addNode('gremlinTunnelAttack', {
+		bg: 'red_dead',
+		left: function(state) {
+			return {
+				node: 'death',
+				str: "die honorably",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'death',
+				str: "die dishonorably",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //gremlinTunnelAttack
+
+	this.addNode('gremlinTunnelDead', {
+		bg: 'tube_grem_dead',
+		left: function(state) {
+			return {
+				node: 'engine',
+				str: "forward",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'cargoWithGun',
+				str: "back",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //gremlinTunnelDead
+	
+	
 	
 	this.addNode('cargoWithGun', {
 		bg: 'cargo_bay_monster',
@@ -349,11 +456,12 @@ function Story() {
 		},
 		right: function(state) {
 			return {
-				node: 'cargoWithCore',
+				node: 'cargoMonsterDead',
 				str: "shoot",
 				select: function(){
 					me.audio.play("lazer");
 					me.audio.play("large-explosion");
+					state.monsterDead = true;
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -365,7 +473,7 @@ function Story() {
 		left: function(state) {
 			return {
 				node: 'cargoMonsterDead',
-				str: "push aside",
+				str: "chill here",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
@@ -374,8 +482,9 @@ function Story() {
 		right: function(state) {
 			return {
 				node: 'cargoWithCore',
-				str: "loot",
+				str: "take core",
 				select: function(){
+					state.haveCore = true;
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -387,7 +496,7 @@ function Story() {
 		left: function(state) {
 			return {
 				node: 'cargoWithCore',
-				str: "push aside",
+				str: "chill here",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
@@ -469,21 +578,31 @@ function Story() {
 			};
 		},
 		right: function(state) {
-			return {
-				node: 'helm',
-				str: "helm",
-				select: function(){
-				},
-				pos: new me.Vector2d(0.7, 0.55),
-			};
+			if (state.engineOn) {
+				return {
+					node: 'helm',
+					str: "helm",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			} else {
+				return {
+					node: 'helmOff',
+					str: "helm",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			}
 		},
 	}); //bridgeShield
 	
 	this.addNode('helm', {
-		bg: 'engine_room_computer',
+		bg: 'engine_room_computer_on',
 		left: function(state) {
-			return {
-				node: 'death',
+				return {
+				node: 'flyAway',
 				str: "drive",
 				select: function(){
 				},
@@ -499,7 +618,51 @@ function Story() {
 				pos: new me.Vector2d(0.7, 0.55),
 			};
 		},
-	});
+	}); //helm
+	
+	this.addNode('helmOff', {
+		bg: 'engine_room_computer',
+		left: function(state) {
+				return {
+				node: 'stairs1',
+				str: "stairs",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'bridgeShield',
+				str: "back",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //helmOff
+	
+	this.addNode('flyAway', {
+		bg: 'space_streak',
+		left: function(state) {
+				return {
+				node: 'death',
+				str: "fly away",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'death',
+				str: "escape",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //fly away
 	
 	
 	this.addNode('stairs1', {
@@ -514,13 +677,23 @@ function Story() {
 			};
 		},
 		right: function(state) {
-			return {
-				node: 'weapons',
-				str: "weapons",
-				select: function(){
-				},
-				pos: new me.Vector2d(0.7, 0.55),
-			};
+			if (state.haveGun) {
+				return {
+					node: 'weapons',
+					str: "weapons",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			} else {
+				return {
+					node: 'weaponsNoGun',
+					str: "weapons",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			}
 		},
 	}); //stairs1
 	
@@ -541,6 +714,7 @@ function Story() {
 				node: 'flush',
 				str: "press",
 				select: function(){
+					state.flush = true;
 					me.audio.play("button");
 					me.audio.play("cargobayflush");
 				},
@@ -553,8 +727,8 @@ function Story() {
 		bg: 'console_bridge_2',
 		left: function(state) {
 			return {
-				node: 'start',
-				str: "boot",
+				node: 'weaponsDead',
+				str: "shoot",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
@@ -570,6 +744,94 @@ function Story() {
 			};
 		},
 	}); //weapons
+	
+	this.addNode('weaponsNoGun', {
+		bg: 'console_bridge_2',
+		left: function(state) {
+			return {
+				node: 'weaponsAttack',
+				str: "boot",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'stairs3',
+				str: "leave",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //weaponsNoGun
+	
+	this.addNode('weaponsDead', {
+		bg: 'console_bridge_2_dead',
+		left: function(state) {
+			return {
+				node: 'explode',
+				str: "use nuke",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'laserWin',
+				str: "use lasers",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //weaponsDead
+	
+	this.addNode('laserWin', {
+		bg: 'space_ship_laser_win',
+		left: function(state) {
+			return {
+				node: 'explode',
+				str: "win",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'laserWin',
+				str: "win and bm",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //weaponsDead
+	
+	this.addNode('weaponsAttack', {
+		bg: 'console_bridge_attack',
+		left: function(state) {
+			return {
+				node: 'death',
+				str: "scream and die",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'death',
+				str: "just die",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //weaponsAttack
 	
 	this.addNode('podStatus', {
 		bg: 'console_bridge_1_launched',
@@ -587,7 +849,9 @@ function Story() {
 				node: 'flush',
 				str: "press",
 				select: function(){
+					state.flush = true;
 					me.audio.play("button");
+					me.audio.play("cargobayflush");
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -629,13 +893,23 @@ function Story() {
 			};
 		},
 		right: function(state) {
-			return {
-				node: 'weapons',
-				str: "weapons",
-				select: function(){
-				},
-				pos: new me.Vector2d(0.7, 0.55),
-			};
+			if (state.haveGun) {
+				return {
+					node: 'weapons',
+					str: "weapons",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			} else {
+				return {
+					node: 'weaponsNoGun',
+					str: "weapons",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			}
 		},
 	}); //stairs2
 	
@@ -664,13 +938,23 @@ function Story() {
 	this.addNode('bridge2', {
 		bg: 'bridge_shield',
 		left: function(state) {
-			return {
-				node: 'death',
-				str: "Helm",
-				select: function(){
-				},
-				pos: new me.Vector2d(0.2, 0.70),
-			};
+			if (state.engineOn) {
+				return {
+					node: 'helm',
+					str: "helm",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			} else {
+				return {
+					node: 'helmOff',
+					str: "helm",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			}
 		},
 		right: function(state) {
 			return {
@@ -695,13 +979,39 @@ function Story() {
 			};
 		},
 		right: function(state) {
-			return {
-				node: 'bayFromBridge',
-				str: "keep going",
-				select: function(){
-				},
-				pos: new me.Vector2d(0.7, 0.55),
-			};
+			if(state.flush) {
+				return {
+					node: 'bayFromBridge',
+					str: "keep going",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			} else if (state.monsterDead) {
+				return {
+					node: 'bayFromBridgeDead',
+					str: "keep going",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			} else if (state.haveGun) {
+				return {
+					node: 'bayFromBridgeGun',
+					str: "keep going",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			} else {
+				return {
+					node: 'cargoMonster',
+					str: "keep going",
+					select: function(){
+					},
+					pos: new me.Vector2d(0.7, 0.55),
+				};
+			}
 		},
 	}); //hallToCargo
 	
@@ -711,8 +1021,8 @@ function Story() {
 		bg: 'cargo_bay',
 		left: function(state) {
 			return {
-				node: 'death',
-				str: "TBD",
+				node: 'podWin',
+				str: "enter pod",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
@@ -729,18 +1039,117 @@ function Story() {
 		},
 	}); //bayFromBridge
 	
-	//engine room
-	
-	this.addNode('engine', {
-		bg: 'engine_room',
+	this.addNode('bayFromBridgeDead', {
+		bg: 'cargo_bay_monster_dead',
 		left: function(state) {
 			return {
-				node: 'core',
-				str: "core",
+				node: 'bayFromBridgeDead',
+				str: "chill here",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
+		},
+		right: function(state) {
+			return {
+				node: 'bridgeShield',
+				str: "back to bridge",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); 
+	
+	this.addNode('bayFromBridgeGun', {
+		bg: 'cargo_bay_monster',
+		left: function(state) {
+			return {
+				node: 'cargoMonster',
+				str: "shoot",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'bayFromBridgeDead',
+				str: "shoot",
+				select: function(){
+					me.audio.play("lazer");
+					me.audio.play("large-explosion");
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); 
+	
+	this.addNode('podWin', {
+		bg: 'space_ship_streak',
+		left: function(state) {
+			return {
+				node: 'podWin',
+				str: "flee",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'podWin',
+				str: "escape",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	});
+	
+	//engine room
+	
+	this.addNode('engine', {
+		bg: 'engine_room',
+		/*
+		left: function(state) {
+			if(state.haveGun) {
+				return {
+					node: 'gremlinTunnelGun',
+					str: "straight",
+					select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+				};
+			} else {
+				return {
+					node: 'gremlinTunnelNoGun',
+					str: "straight",
+					select: function(){
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+				};
+			}
+		},
+		*/
+		left: function(state) {
+			if(state.haveCore) {
+				return {
+					node: 'core',
+					str: "core",
+					select: function(){
+					},
+				pos: new me.Vector2d(0.2, 0.70),
+				};
+			} else {
+				return {
+					node: 'coreNoCore',
+					str: "core",
+					select: function(){
+					},
+				pos: new me.Vector2d(0.2, 0.70),
+				};
+			}
 		},
 		right: function(state) {
 			return {
@@ -760,6 +1169,7 @@ function Story() {
 				node: 'engineOn',
 				str: "replace",
 				select: function(){
+					state.engineOn = true;
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -774,6 +1184,52 @@ function Story() {
 			};
 		},
 	}); //core
+	
+	this.addNode('coreNoCore', {
+		bg: 'engine_room_core',
+		left: function(state) {
+			return {
+				node: 'explode',
+				str: "shoot",
+				select: function(){
+					state.engineOn = true;
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'engine',
+				str: "back",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //coreNoCore
+	
+	this.addNode('explode', {
+		bg: 'space_ship_explode',
+		left: function(state) {
+			return {
+				node: 'death',
+				str: "explode",
+				select: function(){
+					state.engineOn = true;
+				},
+				pos: new me.Vector2d(0.2, 0.70),
+			};
+		},
+		right: function(state) {
+			return {
+				node: 'death',
+				str: "blow up",
+				select: function(){
+				},
+				pos: new me.Vector2d(0.7, 0.55),
+			};
+		},
+	}); //explode
 	
 	this.addNode('engineOn', {
 		bg: 'engine_room_active',
