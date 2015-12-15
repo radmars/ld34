@@ -42,7 +42,8 @@ var GameResources = (function() {
 		_Image("splash"),
 		_Image("introcta"),
 		_Image("game_over"),
-		
+		_Image("win"),
+
 
 		// game screens
 		_Image("red_dead"),

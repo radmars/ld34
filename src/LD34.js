@@ -74,10 +74,12 @@ LD34.prototype.rightClickProxy = function(e){
 * Do stuff post-resource-load.
 */
 LD34.prototype.loaded = function() {
+	me.state.WIN = 455;
 	me.state.set( me.state.INTRO, new RadmarsScreen() );
 	me.state.set( me.state.MENU, new TitleScreen() );
 	me.state.set( me.state.PLAY, new PlayScreen() );
 	me.state.set( me.state.GAMEOVER, new GameOverScreen() );
+	me.state.set( me.state.WIN, new WinScreen() );
 
 	me.state.change(this.options.skipIntro ? me.state.PLAY : me.state.INTRO);
 };

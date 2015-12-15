@@ -103,3 +103,44 @@ var GameOverScreen = me.ScreenObject.extend({
 		me.audio.stopTrack();
 	}
 });
+
+var WinScreen = me.ScreenObject.extend({
+	onResetEvent: function() {
+		this.bg = new me.Sprite( 0, 0, {
+			image: "win",
+		});
+		var cx = window.app.screenWidth / 2;
+		var cy = window.app.screenHeight / 2;
+
+		this.bg.pos.x = cx - this.bg.width / 2;
+		this.bg.pos.y = cy - this.bg.height / 2;
+
+		this.hitenter = new HitEnter(window.app.screenWidth/2, window.app.screenHeight/2 + 150);
+
+		me.game.world.addChild(new BGColor() );
+		me.game.world.addChild(this.bg );
+		me.game.world.addChild(this.hitenter);
+
+		me.audio.stopTrack();
+		//me.audio.playTrack( "ld34-title", 0.7 );
+		//me.audio.play("micromancer");
+		me.audio.play("select-L");
+		me.audio.play("select-R");
+		me.audio.play("merge");
+
+		this.subscription = me.event.subscribe( me.event.KEYDOWN, this.keyHandler.bind(this));
+	},
+
+	keyHandler: function (action, keyCode, edge) {
+		if( keyCode === me.input.KEY.ENTER ) {
+			me.state.change( me.state.PLAY );
+		}
+	},
+
+	onDestroyEvent: function() {
+		me.game.world.removeChild( this.bg );
+		me.game.world.removeChild( this.hitenter );
+		me.event.unsubscribe( this.subscription );
+		me.audio.stopTrack();
+	}
+});
