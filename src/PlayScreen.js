@@ -218,7 +218,7 @@ var PlayScreen = me.ScreenObject.extend({
 				this.notification.setText("TIME SEEMS TO MOVE IN ONE DIRECTION");
 			}
 			else if(tryToSplit) {
-				this.notification.setText("OMG YOU SPLIT THE TIMELINE");
+				this.notification.setText("YOU SPLIT THE TIMELINE");
 				me.audio.play("split");
 			}
 		}
