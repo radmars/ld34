@@ -379,6 +379,8 @@ function Story() {
 				node: 'gremlinTunnelDead',
 				str: "shoot",
 				select: function(){
+					me.audio.play("lazer");
+					me.audio.play("gremlin-death");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -731,6 +733,8 @@ function Story() {
 				node: 'weaponsDead',
 				str: "shoot",
 				select: function(){
+					me.audio.play("lazer");
+					me.audio.play("large-explosion");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -1071,6 +1075,7 @@ function Story() {
 				node: 'cargoMonster',
 				str: "shoot",
 				select: function(){
+					me.audio.play("lazer");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
