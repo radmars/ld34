@@ -10,6 +10,7 @@ function Node(settings) {
 	this.sprites = settings.sprites || function() {return {}};
 	this.right = settings.right;
 	this.left = settings.left;
+	this.callback = settings.callback;
 }
 
 /** Returns the name of the next node and runs the select handler for the direction provided */
@@ -89,6 +90,9 @@ function Story() {
 				node: 'startNoRubble',
 				str: "free",
 				select: function(){
+					// ogre smash & appear
+					me.audio.play("ogre-approach");
+					me.audio.play("ogre-smash");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -98,6 +102,8 @@ function Story() {
 				node: 'death',
 				str: "free",
 				select: function(){
+					// gremlin
+					me.audio.play("gremlin-approach");
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -212,6 +218,10 @@ function Story() {
 				pos: new me.Vector2d(0.7, 0.55),
 			};
 		},
+		callback: function(state) {
+			// check state here if needed
+			me.audio.play("monster-approach");
+		}
 	}); //cargoMonster
 	
 	this.addNode('pod1', {
@@ -331,6 +341,8 @@ function Story() {
 				node: 'cargoMonster',
 				str: "shoot",
 				select: function(){
+					me.audio.play("lazer");
+					me.audio.play("monster-death");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -340,6 +352,8 @@ function Story() {
 				node: 'cargoWithCore',
 				str: "shoot",
 				select: function(){
+					me.audio.play("lazer");
+					me.audio.play("large-explosion");
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -401,6 +415,7 @@ function Story() {
 				node: 'bridgeNoShield',
 				str: "red button?",
 				select: function(){
+					me.audio.play("button");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -410,6 +425,7 @@ function Story() {
 				node: 'bridgeShield',
 				str: "blue button?",
 				select: function(){
+					me.audio.play("button");
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -436,6 +452,9 @@ function Story() {
 				pos: new me.Vector2d(0.7, 0.55),
 			};
 		},
+		callback: function(state) {
+			me.audio.play("vacuum");
+		}
 	}); //bridgeNoShield
 	
 	this.addNode('bridgeShield', {
@@ -512,6 +531,7 @@ function Story() {
 				node: 'podStatus',
 				str: "press",
 				select: function(){
+					me.audio.play("button");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -521,6 +541,8 @@ function Story() {
 				node: 'flush',
 				str: "press",
 				select: function(){
+					me.audio.play("button");
+					me.audio.play("cargobayflush");
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -565,6 +587,7 @@ function Story() {
 				node: 'flush',
 				str: "press",
 				select: function(){
+					me.audio.play("button");
 				},
 				pos: new me.Vector2d(0.7, 0.55),
 			};
@@ -578,6 +601,7 @@ function Story() {
 				node: 'podStatus',
 				str: "press",
 				select: function(){
+					me.audio.play("button");
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};

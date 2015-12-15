@@ -35,7 +35,11 @@ function Timeline(n, font, state, story){
 };
 
 Timeline.prototype.choose = function(direction) {
-	return this.story.getNode(this.node.select(direction, this.state));
+	var node = this.story.getNode(this.node.select(direction, this.state));
+	if (node.callback) {
+		node.callback(this.state);
+	}
+	return node;
 }
 
 Timeline.prototype.progress = function(next) {
@@ -189,6 +193,8 @@ var PlayScreen = me.ScreenObject.extend({
 
 		if(merged) {
 			this.notification.setText("THINGS ARE COMING TOGETHER...");
+			me.audio.play("select-L");
+			me.audio.play("select-R");
 			me.audio.play("merge");
 		}
 		else {
