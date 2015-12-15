@@ -114,7 +114,7 @@ var PlayScreen = me.ScreenObject.extend({
 			me.audio.play("ld34-" + i, true, null, 0.0);
 		}
 		me.audio.play("alarm", true, null, 0.0);
-		me.audio.fade("alarm", 0.0, 0.6, 119 * 1000.0);
+		me.audio.fade("alarm", 0.0, 0.4, 119 * 1000.0);
 
 		this.addTimeline(this.story.getNode(this.startNode));
 		this.relayout();
