@@ -547,7 +547,7 @@ function Story() {
 		left: function(state) {
 			return {
 				node: 'death',
-				str: "death",
+				str: "suffocate",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.2, 0.70),
@@ -556,7 +556,7 @@ function Story() {
 		right: function(state) {
 			return {
 				node: 'death',
-				str: "death",
+				str: "choke",
 				select: function(){
 				},
 				pos: new me.Vector2d(0.7, 0.55),
@@ -1181,7 +1181,6 @@ function Story() {
 				node: 'explode',
 				str: "shoot",
 				select: function(){
-					state.engineOn = true;
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};
@@ -1204,7 +1203,6 @@ function Story() {
 				node: 'death',
 				str: "explode",
 				select: function(){
-					state.engineOn = true;
 				},
 				pos: new me.Vector2d(0.2, 0.70),
 			};

@@ -75,6 +75,7 @@ var GameResources = (function() {
 		_Image("escape_pod"),
 		_Image("hallway_branch"),
 		_Image("hallway"),
+		_Image("space"),
 		_Image("space_ship_explode"),
 		_Image("space_ship_laser_win"),
 		_Image("space_ship_streak"),
